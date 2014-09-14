@@ -74,21 +74,24 @@ def readFileAsList(filename, yogi, tz):
 # This basic command line argument parsing code is provided and
 # calls the print_words() and print_top() functions which you must define.
 def main():
-  if len(sys.argv) != 3:
-    print 'usage: ./import.py <raw file> <yogi name>'
+  if len(sys.argv) != 6:
+    print 'usage: ./import.py <raw file> <yogi name> <esHost> <esIndex> <esType>'
     sys.exit(1)
 
   filename = sys.argv[1]
   yogi = sys.argv[2]
+  esHost = sys.argv[3]
+  esIndex = sys.argv[4]
+  esType = sys.argv[5]
   
   tz = timezone('Asia/Hong_Kong')
  
   attnList = readFileAsList(filename, yogi, tz)
-  body = composeESBulkIndexBody(attnList, 'workout_20140908', 'attendance')
+  body = composeESBulkIndexBody(attnList, esIndex, esType)
   
   # connect to ES
-  es = Elasticsearch(["www.rabbitsky.com"])
-  es.bulk(body=body, index='workout_20140908', doc_type='attendance')
+  es = Elasticsearch([esHost])
+  es.bulk(body=body, index=esHost, doc_type=esType)
   
   #print "List size:", len(attnList)
   #print attnList
